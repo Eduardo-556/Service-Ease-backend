@@ -1,6 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { UsersService } from './users.service';
 import { PrismaService } from '../database/prisma.service';
+import { WithoutPasswordUserDto } from './dto/without-password-user.dto';
 
 const prismaMock = {
   user: {
@@ -100,7 +101,6 @@ describe('UsersService', () => {
         lastName: 'Silva',
         phone: '12345678',
         email: 'eduardo@email.com',
-        password: 'password',
         createdAt: new Date(),
         updatedAt: new Date(),
       },
@@ -110,7 +110,6 @@ describe('UsersService', () => {
         lastName: 'Santos',
         phone: '87654321',
         email: 'maria@email.com',
-        password: 'password123',
         createdAt: new Date(),
         updatedAt: new Date(),
       },
@@ -120,6 +119,9 @@ describe('UsersService', () => {
     const result = await service.findOne(userId);
     expect(prismaMock.user.findUnique).toHaveBeenCalledWith({
       where: { id: userId },
+      select: {
+        ...WithoutPasswordUserDto,
+      },
     });
     expect(result).toEqual({ user: mockUsers[0] });
   });
@@ -135,7 +137,6 @@ describe('UsersService', () => {
       firstName: 'Eduardo',
       lastName: 'Silva',
       phone: '123456',
-      password: 'password',
       cratedAt: new Date(),
       updatedAt: new Date(),
     };
@@ -149,6 +150,9 @@ describe('UsersService', () => {
     expect(prismaMock.user.update).toHaveBeenCalledWith({
       where: { id: userId },
       data: updateUserDto,
+      select: {
+        ...WithoutPasswordUserDto,
+      },
     });
     expect(result).toEqual({ user: updatedUser });
   });

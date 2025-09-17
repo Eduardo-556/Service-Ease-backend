@@ -3,6 +3,8 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { PrismaService } from '../database/prisma.service';
 import { PrismaError } from 'src/common/interfaces/prisma-error.interface';
+import password from './passwordService/password';
+import { WithoutPasswordUserDto } from './dto/without-password-user.dto';
 
 @Injectable()
 export class UsersService {
@@ -10,6 +12,8 @@ export class UsersService {
 
   async create(createUserDto: CreateUserDto) {
     try {
+      const hashedPassword = await password.hash(createUserDto.password);
+      createUserDto.password = hashedPassword;
       await this.prismaService.user.create({
         data: { ...createUserDto },
       });
@@ -29,12 +33,22 @@ export class UsersService {
   }
 
   async findAll() {
-    const users = await this.prismaService.user.findMany();
+    const users = await this.prismaService.user.findMany({
+      select: {
+        ...WithoutPasswordUserDto,
+      },
+    });
     return { users: users };
   }
 
   async findOne(id: string) {
-    const user = await this.prismaService.user.findUnique({ where: { id } });
+    const user = await this.prismaService.user.findUnique({
+      where: { id },
+      select: {
+        ...WithoutPasswordUserDto,
+      },
+    });
+
     if (!user) {
       throw new NotFoundException('User not found');
     }
@@ -51,7 +65,11 @@ export class UsersService {
     const upadtedUser = await this.prismaService.user.update({
       where: { id },
       data: updateUserDto,
+      select: {
+        ...WithoutPasswordUserDto,
+      },
     });
+
     return { user: upadtedUser };
   }
 

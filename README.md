@@ -40,11 +40,11 @@ Abaixo está a lista de funcionalidades planejadas e o status de cada uma.
 
 - [x] Configuração inicial do projeto Nest.js
 - [x] Integração com banco de dados PostgreSQL via Prisma
-- [ ] Estrutura de Módulos, Controllers e Services
+- [x] Estrutura de Módulos, Controllers e Services
 - [x] Criação do Model/Entidade de Usuário (`User`)
-- [ ] Implementação de hash de senhas com **`bcrypt`**
+- [x] Implementação de hash de senhas com **`bcrypt`**
 - [ ] Sistema de Autenticação e Autorização com `JWT` e `Passport.js`
-- [ ] Criação do Model/Entidade de Cliente (`Client`)
+- [x] Criação do Model/Entidade de Cliente (`Client`)
 - [ ] Criação do Model/Entidade de Ordem de Serviço (`ServiceOrder`)
 - [x] Desenvolvimento dos endpoints CRUD para Usuários
 - [ ] Desenvolvimento dos endpoints CRUD para Clientes

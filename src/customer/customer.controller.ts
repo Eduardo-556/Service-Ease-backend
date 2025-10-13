@@ -24,9 +24,9 @@ export class CustomerController {
     return this.customerService.create(createCustomerDto, userId);
   }
 
-  @Get()
-  findAll() {
-    return this.customerService.findAll();
+  @Get(':userId')
+  findAll(@Param('userId', new ParseUUIDPipe()) userId: string) {
+    return this.customerService.findAll(userId);
   }
 
   @Get(':id')

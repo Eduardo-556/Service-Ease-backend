@@ -2,6 +2,7 @@ import { Injectable, Logger } from '@nestjs/common';
 import { CreateCustomerDto } from './dto/create-customer.dto';
 import { UpdateCustomerDto } from './dto/update-customer.dto';
 import { PrismaService } from 'src/database/prisma.service';
+import { PrismaError } from 'src/common/interfaces/prisma-error.interface';
 
 @Injectable()
 export class CustomerService {
@@ -21,8 +22,21 @@ export class CustomerService {
     }
   }
 
-  findAll() {
-    return `This action returns all customer`;
+  async findAll(userId: string) {
+    try {
+      const customers = await this.prismaService.customer.findMany({
+        where: { userId },
+      });
+
+      if (!customers.length) {
+        return { message: 'Nenhum cliente encontrado para esse usuário.' };
+      }
+
+      return { customers };
+    } catch (error) {
+      const prismaError = error as PrismaError;
+      return prismaError;
+    }
   }
 
   findOne(id: string) {

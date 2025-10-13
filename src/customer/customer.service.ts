@@ -12,13 +12,21 @@ export class CustomerService {
   async create(createCustomerDto: CreateCustomerDto, userId: string) {
     try {
       const dataToCreate = { ...createCustomerDto, userId };
-
+      const customerAlreadyExists =
+        await this.prismaService.customer.findUnique({
+          where: { email: dataToCreate.email },
+        });
+      if (customerAlreadyExists) {
+        return {
+          message: 'Já existe um cliente com esse email.',
+        };
+      }
       return await this.prismaService.customer.create({
         data: dataToCreate,
       });
     } catch (error) {
-      this.logger.error('Falha ao criar cliente', error);
-      throw error;
+      const prismaError = error as PrismaError;
+      return prismaError;
     }
   }
 
